@@ -9,7 +9,7 @@
 
 - **设置了三种模式添加trackers:**
 \
-&ensp;**1.添加tracker与tracker服务器列表获取的tracker**\
+&ensp;**1.添加默认tracker与tracker服务器列表获取的tracker**\
 &ensp;**2.仅添加默认tracker**\
 &ensp;**3.仅添加tracker服务器列表获取的tracker**
 
