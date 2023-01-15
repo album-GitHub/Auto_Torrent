@@ -20,7 +20,7 @@
 # 使用方法
 
 1.下载这三个文件`Auto_Torrent.py、Auto_Torrent_config.ini、requirements.txt`并放至同一目录下
-   第一次使用请切换至脚本所在目录使用命令pip install -r requirements.txt 安装所需依赖
+   第一次使用请切换至脚本所在目录使用命令`pip install -r requirements.txt` 安装所需依赖
   
 2.使用文本编辑器修改`Auto_Torrent_config.ini`文件，设置好: 制种模式（重要）、默认添加的tracker、制种块大小、获取tracker服务器列表地址（可选）、种子文件保存的路径（可选）
 
