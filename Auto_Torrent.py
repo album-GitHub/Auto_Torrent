@@ -16,26 +16,29 @@ class Collect:
         #读取配置文件
         self.cf.read('Auto_Torrent_config', encoding='utf-8-sig')
         self.sections = self.cf.sections()
-        #获取配置文件内上次更新tracker的时间
+        #获取配置文件内 上次更新tracker的时间
         self.config_time = self.cf.get("default", "time")
-        #获取配置文件内的tracker列表
+        #获取配置文件内的 tracker列表
         self.config_tracker = self.cf.get("default", "web_tracker")
-        #获取配置文件内的默认tracker
+        #获取配置文件内的 默认tracker
         self.config_detracker = self.cf.get("default", "default_tracker")
-        #获取配置文件内的默认保存路径
+        #获取配置文件内的 默认保存路径
         self.config_savepath = self.cf.get("default", "savepath")
-        #获取配置文件内的获取tracker服务器地址
+        #获取配置文件内的 获取tracker服务器地址
         self.web_tracker_url = self.cf.get("default", "web_tracker_url")
-        #获取配置文件内制种块大小
+        #获取配置文件内 制种块大小
         self.size = self.cf.get("default", "size")
-        #获取配置文件内的制种模式
+        #获取配置文件内的 tracker服务器添加模式
         self.mode = self.cf.get("default", "mode")
-
+        #获取配置文件内 种子是否为私有种子
+        self.private = self.cf.get("default", "private")
+        
+        #获取格式化的当前时间
         time_tuple = time.localtime(time.time())
         self.time_str = time.strftime("%Y-%m-%d", time_tuple)
-        #获取格式化的当前时间
-        self.now_time = str(time_tuple.tm_mon)+str(time_tuple.tm_mday)
         #获取月份与日期并格式化为文本
+        self.now_time = str(time_tuple.tm_mon)+str(time_tuple.tm_mday)
+        
 
     def run(self):
         if int(self.mode) == 0 or int(self.mode) == 2:
@@ -92,7 +95,7 @@ class Collect:
             #传递信息给torrent
             t = Torrent(path=i,trackers=tracker)
             #是否
-            t.private = False
+            t.private = self.private
             t.piece_size = int(self.size)
             #制种块大小
             t.generate()
