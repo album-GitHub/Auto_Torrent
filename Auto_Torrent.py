@@ -14,7 +14,7 @@ class Collect:
             sys.exit(0)
         self.cf = configparser.ConfigParser()
         #读取配置文件
-        self.cf.read('Auto_Torrent_config', encoding='utf-8-sig')
+        self.cf.read('Auto_Torrent_config.ini', encoding='utf-8-sig')
         self.sections = self.cf.sections()
         #获取配置文件内 上次更新tracker的时间
         self.config_time = self.cf.get("default", "time")
@@ -38,7 +38,8 @@ class Collect:
         self.time_str = time.strftime("%Y-%m-%d", time_tuple)
         #获取月份与日期并格式化为文本
         self.now_time = str(time_tuple.tm_mon)+str(time_tuple.tm_mday)
-        
+
+        self.headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'}
 
     def run(self):
         if int(self.mode) == 0 or int(self.mode) == 2:
@@ -46,7 +47,11 @@ class Collect:
             if self.now_time != self.config_time:
                 #如果日期发生变化则更新新的tracker
                 #从web获取最新的tracker列表
-                req = requests.get(self.web_tracker_url)
+                try:
+                    req = requests.get(self.web_tracker_url, headers=self.headers)
+                except:
+                    print('无法从web获取tracker列表，请检查网址、网络、代理')
+                    sys.exit(0)
                 #转换为字符串
                 tracker_list = str(req.content)
                 #替换转换后文件中的换行，删除因转换导致的字符串开头不需要的两个字符
@@ -57,22 +62,22 @@ class Collect:
                 tracker_list = tracker_list.split("\\n")
                 
                 #把信息写回配置文件
-                self.update_config('Auto_Torrent_config',"default", "web_tracker",','.join(tracker_list))
-                self.update_config('Auto_Torrent_config',"default", "time", self.now_time)
+                self.update_config('Auto_Torrent_config.ini',"default", "web_tracker",','.join(tracker_list))
+                self.update_config('Auto_Torrent_config.ini',"default", "time", self.now_time)
                 print('已更新配置文件')
             else:
                 #日期无变化则直接从配置文件读取tracker
                 tracker_list = self.config_tracker.split(",")
-        if self.mode == 0:
+        if int(self.mode) == 0:
             #默认tracker加上获取到的tracker
             print('默认tracker加上获取到的tracker')
             default_tracker = self.config_detracker.split(",")
             tracker = default_tracker +  tracker_list
-        elif self.mode == 1:
+        elif int(self.mode) == 1:
             print('为仅使用默认tracker')
             #模式1为仅使用默认tracker
             tracker = self.config_detracker
-        elif self.mode == 2:
+        elif int(self.mode) == 2:
             print('仅使用web获取的tracker')
             #模式2为仅使用web获取的tracker
             tracker = tracker_list
