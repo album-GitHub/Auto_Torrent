@@ -10,7 +10,7 @@ class Collect:
         #获取拖拽或作为参数传入的文件或文件夹
         self.input_list = sys.argv
         if len(self.input_list) < 2:
-            print('输入为空, 结束运行')
+            input('输入为空, 结束运行')
             sys.exit(0)
         self.cf = configparser.ConfigParser()
         #读取配置文件
@@ -43,14 +43,14 @@ class Collect:
 
     def run(self):
         if int(self.mode) == 0 or int(self.mode) == 2:
-            #模式0与1则进行web_tracker的获取与更新
+            #模式0与2则进行web_tracker的获取与更新
             if self.now_time != self.config_time:
                 #如果日期发生变化则更新新的tracker
                 #从web获取最新的tracker列表
                 try:
                     req = requests.get(self.web_tracker_url, headers=self.headers)
                 except:
-                    print('无法从web获取tracker列表，请检查网址、网络、代理')
+                    input('无法从web获取tracker列表，请检查网址、网络、代理')
                     sys.exit(0)
                 #转换为字符串
                 tracker_list = str(req.content)
@@ -76,15 +76,15 @@ class Collect:
         elif int(self.mode) == 1:
             print('为仅使用默认tracker')
             #模式1为仅使用默认tracker
-            tracker = self.config_detracker
+            tracker = self.config_detracker.split(",")
         elif int(self.mode) == 2:
             print('仅使用web获取的tracker')
             #模式2为仅使用web获取的tracker
             tracker = tracker_list
         for i in self.input_list[1:]:
         #循环读取输入文件
-            if os.path.isdir(i):
             #如果是目录
+            if os.path.isdir(i):
                 #直接获取目录里文件夹名字
                 interior= os.path.basename(i)
                 #获取文件夹上一级目录
@@ -99,7 +99,7 @@ class Collect:
                 cur_dir = os.path.dirname(os.path.abspath(i))
             #传递信息给torrent
             t = Torrent(path=i,trackers=tracker)
-            #是否
+            #是否设置为私有种子
             t.private = self.private
             t.piece_size = int(self.size)
             #制种块大小
@@ -138,5 +138,5 @@ if __name__ == '__main__':
     mySpider = Collect()
     mySpider.run()
     #取消下面的注释掉则制种完成不自动关闭窗口
-    #input('制种完成，按任意键退出')
+    input('制种完成，按任意键退出')
     
